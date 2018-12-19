@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Todo</string>
+    <string name="login">ورود</string>
+    <string name="register">ثبت نام</string>
+    <string name="hint_email">ایمیل</string>
+    <string name="hint_password">کلمه ی عبور</string>
+    <string name="hint_password_rep">تکرار کلمه ی عبور</string>
 </resources>
