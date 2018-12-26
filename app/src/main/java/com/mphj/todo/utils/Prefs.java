@@ -7,11 +7,11 @@ public class Prefs {
     private static final String SHARED_PREFERENCES_NAME = "todo";
 
     public static void set(String key, String value, Context context) {
-        context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE).edit().putString(key, value);
+        context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE).edit().putString(key, value).apply();
     }
 
     public static void setNull(String key, Context context) {
-        context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE).edit().putString(key, null);
+        context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE).edit().putString(key, null).apply();
     }
 
     public static String asString(String key, Context context) {

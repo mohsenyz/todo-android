@@ -4,10 +4,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/container"
     android:background="@drawable/bg_login_bitmap"
     tools:context=".activities.LoginActivity">
 
+    <ProgressBar
+        android:id="@+id/progress_line"
+        style="@style/Base.Widget.AppCompat.ProgressBar.Horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="9dp"
+        android:indeterminate="true"
+        android:indeterminateTint="@color/colorPrimary"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
     <ImageView
+        android:id="@+id/imageView"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="16dp"
@@ -30,8 +43,7 @@
         android:layout_marginLeft="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/switch_page"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
@@ -51,6 +63,8 @@
                     android:layout_height="wrap_content"
                     android:gravity="center_horizontal"
                     android:hint="@string/hint_email"
+                    android:id="@+id/email"
+                    android:inputType="textEmailAddress"
                     android:textAlignment="center" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -58,6 +72,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="3dp"
+                android:id="@+id/password_layout"
                 android:textAlignment="center">
 
                 <EditText
@@ -65,6 +80,8 @@
                     android:layout_height="wrap_content"
                     android:gravity="center_horizontal"
                     android:hint="@string/hint_password"
+                    android:id="@+id/password"
+                    android:inputType="textPassword"
                     android:textAlignment="center" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -72,6 +89,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="3dp"
+                android:id="@+id/password_repeat_layout"
                 android:textAlignment="center"
                 android:visibility="gone">
 
@@ -79,7 +97,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center_horizontal"
+                    android:id="@+id/password_repeat"
                     android:hint="@string/hint_password_rep"
+                    android:inputType="textPassword"
                     android:textAlignment="center" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -87,9 +107,20 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/btn_primary"
+                android:id="@+id/submit"
                 android:text="@string/login" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:id="@+id/switch_page"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:text="@string/sign_up_note"
+        android:textAlignment="center"
+        android:textColor="#000"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_start"

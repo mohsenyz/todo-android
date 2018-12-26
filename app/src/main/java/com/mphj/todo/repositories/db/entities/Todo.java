@@ -1,11 +1,21 @@
 package com.mphj.todo.repositories.db.entities;
 
+import java.util.List;
+
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "todo")
 public class Todo {
+
+    /**
+     * Transient fields
+     */
+
+    @Ignore
+    public List<Flag> flags;
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
@@ -31,10 +41,12 @@ public class Todo {
 
     @ColumnInfo(name = "done")
     public boolean done;
+    @Ignore
+    public List<TodoTask> todoTasks;
 
-
-    /**
-     * Transient fields
-     */
+    public Todo() {
+        this.createdAt = System.currentTimeMillis();
+        this.updatedAt = this.createdAt;
+    }
 
 }

@@ -8,4 +8,5 @@
     <color name="colorAccent">#FF9800</color>
     <color name="colorAccentLight">#FFA726</color>
     <color name="colorAccentLightX">#FFB74D</color>
+    <color name="greenPrimary">#4caf50</color>
 </resources>

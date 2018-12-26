@@ -4,7 +4,7 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "todo")
+@Entity(tableName = "flag")
 public class Flag {
 
     @PrimaryKey(autoGenerate = true)
