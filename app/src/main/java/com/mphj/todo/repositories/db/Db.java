@@ -1,6 +1,8 @@
 package com.mphj.todo.repositories.db;
 
+import com.mphj.todo.repositories.db.dao.FlagDao;
 import com.mphj.todo.repositories.db.dao.TodoDao;
+import com.mphj.todo.repositories.db.dao.UserListDao;
 import com.mphj.todo.repositories.db.entities.Flag;
 import com.mphj.todo.repositories.db.entities.Todo;
 import com.mphj.todo.repositories.db.entities.TodoTask;
@@ -13,5 +15,10 @@ import androidx.room.RoomDatabase;
 public abstract class Db extends RoomDatabase {
 
     public abstract TodoDao todoDao();
+
+
+    public abstract FlagDao flagDao();
+
+    public abstract UserListDao userListDao();
 
 }

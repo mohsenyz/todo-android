@@ -17,9 +17,36 @@ public class DateUtils {
         return next.toDate().getTime() - today.toDate().getTime();
     }
 
+    public static boolean inSameDay(long from, long to) {
+        DateTime fDate = new DateTime(from, DateTimeZone.forID("Asia/Tehran"));
+        DateTime tDate = new DateTime(to, DateTimeZone.forID("Asia/Tehran"));
+        return fDate.withTimeAtStartOfDay().isEqual(tDate.withTimeAtStartOfDay());
+    }
+
+    public static boolean isToday(long time) {
+        return inSameDay(DateUtils.def().toDate().getTime(), time);
+    }
+
+    public static boolean isTomorrow(long time) {
+        return inSameDay(DateUtils.def().plusDays(1).toDate().getTime(), time);
+    }
+
+    public static boolean isAfterTomorrow(long time) {
+        return def().plusDays(2).withTimeAtStartOfDay().isBefore(new DateTime(time, DateTimeZone.forID("Asia/Tehran")));
+    }
+
     public static DateTime def() {
         return DateTime.now().withZone(DateTimeZone.forID("Asia/Tehran"));
     }
+
+    public static boolean isBeforeNow(long time) {
+        return new DateTime(time, DateTimeZone.forID("Asia/Tehran")).isBeforeNow();
+    }
+
+    public static boolean isBeforeToday(long time) {
+        return new DateTime(time, DateTimeZone.forID("Asia/Tehran")).isBefore(def().withTimeAtStartOfDay());
+    }
+
 
 
     public static long nextMin(int min) {

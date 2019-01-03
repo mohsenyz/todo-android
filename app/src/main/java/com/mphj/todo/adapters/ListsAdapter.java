@@ -10,7 +10,6 @@ import com.mphj.todo.R;
 import com.mphj.todo.repositories.db.entities.UserList;
 import com.mphj.todo.view.BorderedDrawable;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -25,8 +24,14 @@ public class ListsAdapter extends RecyclerView.Adapter<ListsAdapter.ViewHolder> 
 
     private List<UserList> lists;
 
-    public ListsAdapter() {
-        this.lists = new ArrayList<>();
+    OnListClickListener onListClickListener;
+
+    public ListsAdapter(List<UserList> userLists) {
+        this.lists = userLists;
+    }
+
+    public void setOnListClickListener(OnListClickListener onListClickListener) {
+        this.onListClickListener = onListClickListener;
     }
 
     @NonNull
@@ -41,10 +46,19 @@ public class ListsAdapter extends RecyclerView.Adapter<ListsAdapter.ViewHolder> 
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         if (position == 0) {
             holder.name.setText(R.string.all_tasks);
-            holder.container.setBackgroundDrawable(new BorderedDrawable(ContextCompat.getColor(holder.name.getContext(), R.color.colorAccent), Gravity.RIGHT, 4));
+            holder.container.setBackground(new BorderedDrawable(ContextCompat.getColor(holder.name.getContext(), R.color.colorAccent), Gravity.RIGHT, 4));
         } else {
-
+            holder.name.setText(lists.get(position - 1).name);
         }
+        holder.itemView.setOnClickListener((view) -> {
+            if (onListClickListener != null) {
+                if (position == 0) {
+                    onListClickListener.onListClick(position, null, holder.itemView);
+                } else {
+                    onListClickListener.onListClick(position, lists.get(position - 1), holder.itemView);
+                }
+            }
+        });
     }
 
     @Override
@@ -64,5 +78,10 @@ public class ListsAdapter extends RecyclerView.Adapter<ListsAdapter.ViewHolder> 
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
+    }
+
+
+    public interface OnListClickListener {
+        void onListClick(int position, UserList userList, View itemView);
     }
 }

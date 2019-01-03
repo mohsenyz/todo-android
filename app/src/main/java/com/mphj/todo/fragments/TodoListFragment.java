@@ -2,6 +2,7 @@ package com.mphj.todo.fragments;
 
 import android.animation.Animator;
 import android.graphics.Rect;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,9 +13,17 @@ import android.widget.ImageView;
 import com.mphj.todo.R;
 import com.mphj.todo.activities.TodoListActivity;
 import com.mphj.todo.adapters.TimeSuggestListAdapter;
+import com.mphj.todo.adapters.TodoListAdapter;
+import com.mphj.todo.fragments.dialogs.ListItemBottomSheetFragment;
 import com.mphj.todo.interfaces.BackHandler;
+import com.mphj.todo.repositories.Repository;
+import com.mphj.todo.repositories.db.entities.Flag;
+import com.mphj.todo.repositories.db.entities.Todo;
 import com.mphj.todo.utils.Animate;
 import com.mphj.todo.view.RichEditText;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
@@ -23,20 +32,28 @@ import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import es.dmoral.toasty.Toasty;
 import jp.wasabeef.recyclerview.animators.FadeInAnimator;
 
 public class TodoListFragment extends Fragment implements BackHandler {
 
 
     public TimeSuggestListAdapter timeSuggestListAdapter;
+
     @BindView(R.id.time_suggest)
     RecyclerView timeSuggestRecyclerView;
+
     @BindView(R.id.todo_content)
     RichEditText todoContentEditText;
+
     @BindView(R.id.content_container)
     ConstraintLayout contentContainer;
+
     @BindView(R.id.submit)
     ImageView submit;
+
+    @BindView(R.id.todo_list)
+    RecyclerView todoList;
 
     public static TodoListFragment create() {
         return new TodoListFragment();
@@ -82,10 +99,29 @@ public class TodoListFragment extends Fragment implements BackHandler {
                 }
             }
         });
+
+        Repository.db(getActivity()).todoDao().all().observe(this, (list) -> {
+            LinearLayoutManager todoListLayoutManager = new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false);
+            TodoListAdapter todoListAdapter = new TodoListAdapter(list);
+            todoList.setHasFixedSize(false);
+            todoList.setAdapter(todoListAdapter);
+            todoList.setItemAnimator(new FadeInAnimator());
+            timeSuggestLayoutManager.setReverseLayout(true);
+            todoList.setLayoutManager(todoListLayoutManager);
+        });
+
+
+        ListItemBottomSheetFragment listItemBottomSheetFragment = new ListItemBottomSheetFragment();
+        listItemBottomSheetFragment.show(getFragmentManager(), listItemBottomSheetFragment.getTag());
     }
 
     @OnClick(R.id.submit)
     void onSubmit() {
+        if (todoContentEditText.getText().toString().trim().isEmpty()) {
+            Toasty.error(getActivity(), R.string.empty_task).show();
+            return;
+        }
+        insertTodo();
         submit.animate()
                 .translationX(submit.getWidth() + 100)
                 .setDuration(200)
@@ -179,6 +215,26 @@ public class TodoListFragment extends Fragment implements BackHandler {
                     }
                 })
                 .start();
+        todoContentEditText.setText(null);
+        timeSuggestListAdapter.clear();
+    }
+
+    void insertTodo() {
+        Todo todo = new Todo();
+        todo.content = todoContentEditText.getText().toString();
+        todo.date = timeSuggestListAdapter.getCurrentSelectedDate();
+        todo.priority = todoContentEditText.getPriority();
+        AsyncTask.execute(() -> Repository.db(getActivity()).todoDao().insert(todo));
+
+        List<String> tags = todoContentEditText.getTags();
+        List<Flag> flags = new ArrayList<>();
+        for (String tag : tags) {
+            Flag flag = new Flag();
+            flag.flag = tag;
+            flag.todoId = todo.localId;
+            flags.add(flag);
+        }
+        AsyncTask.execute(() -> Repository.db(getActivity()).flagDao().insert(flags));
     }
 
     void hideTabLayout() {

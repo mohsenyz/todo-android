@@ -34,5 +34,12 @@
     <string name="todo_list">کارها</string>
     <string name="statistics">آمار </string>
     <string name="settings">تنظیمات</string>
+    <string name="today">امروز</string>
+    <string name="others">سایر کارها</string>
     <string name="projects">پروژه ها</string>
+    <string name="done_today">کاری برای امروز نداری! امروز رو تفریح کن!</string>
+    <string name="no_task_yet">هنوز کاری ثبت نشده!</string>
+    <string name="empty_task">لطفا محتوایی برای کار تایپ کنید</string>
+    <string name="submit">تایید</string>
+    <string name="list_name">نام لیست</string>
 </resources>

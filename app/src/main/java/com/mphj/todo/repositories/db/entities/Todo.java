@@ -10,13 +10,6 @@ import androidx.room.PrimaryKey;
 @Entity(tableName = "todo")
 public class Todo {
 
-    /**
-     * Transient fields
-     */
-
-    @Ignore
-    public List<Flag> flags;
-
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
     public int localId;
@@ -41,6 +34,14 @@ public class Todo {
 
     @ColumnInfo(name = "done")
     public boolean done;
+
+    /**
+     * Transient fields
+     */
+
+    @Ignore
+    public List<Flag> flags;
+
     @Ignore
     public List<TodoTask> todoTasks;
 

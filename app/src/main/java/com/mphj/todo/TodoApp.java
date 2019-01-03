@@ -2,7 +2,6 @@ package com.mphj.todo;
 
 import android.app.Application;
 
-import com.facebook.stetho.Stetho;
 import com.mphj.todo.utils.DimensionUtils;
 import com.mphj.todo.utils.FontUtils;
 
@@ -27,9 +26,8 @@ public class TodoApp extends Application {
                 .build());
         Toasty.Config.getInstance()
                 .setToastTypeface(FontUtils.def(this))
-                .setTextSize(DimensionUtils.spToPx(10, this))
+                .setTextSize(DimensionUtils.spToPx(9, this))
                 .apply();
         JodaTimeAndroid.init(this);
-        Stetho.initializeWithDefaults(this);
     }
 }

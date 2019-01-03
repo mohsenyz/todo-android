@@ -7,6 +7,11 @@ import androidx.room.PrimaryKey;
 @Entity(tableName = "user_list")
 public class UserList {
 
+    public UserList() {
+        this.createdAt = System.currentTimeMillis();
+        this.updatedAt = this.createdAt;
+    }
+
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
     public int localId;

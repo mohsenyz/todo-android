@@ -50,6 +50,15 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="5dp"
+            android:background="@drawable/shadow_to_bottom"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/fragment" />
+
+
         <FrameLayout
             android:id="@+id/fragment"
             android:layout_width="match_parent"

@@ -25,7 +25,6 @@ import butterknife.ButterKnife;
 
 public class TimeSuggestListAdapter extends RecyclerView.Adapter<TimeSuggestListAdapter.ViewHolder> {
 
-    public static long CURRENT_TIME;
 
     List<TimeSuggestObj> suggestObjList = new ArrayList<>();
 
@@ -63,14 +62,32 @@ public class TimeSuggestListAdapter extends RecyclerView.Adapter<TimeSuggestList
         }
         holder.itemView.setOnClickListener((v) -> {
             for (int i = 0; i < suggestObjList.size(); i++) {
-                if (suggestObjList.get(i).isSelected) {
+                if (suggestObjList.get(i).isSelected && i != position) {
                     suggestObjList.get(i).isSelected = false;
                     notifyItemChanged(i);
                 }
-                tsObj.isSelected = true;
-                notifyItemChanged(position);
             }
+            tsObj.isSelected = !tsObj.isSelected;
+            notifyItemChanged(position);
         });
+    }
+
+    public void clear() {
+        for (TimeSuggestObj obj : suggestObjList) {
+            if (obj.isSelected == true) {
+                obj.isSelected = false;
+            }
+        }
+        notifyDataSetChanged();
+    }
+
+    public long getCurrentSelectedDate() {
+        for (TimeSuggestObj obj : suggestObjList) {
+            if (obj.isSelected == true) {
+                return DateUtils.def().toDate().getTime() + obj.offsetInMilies;
+            }
+        }
+        return -1;
     }
 
     @Override
