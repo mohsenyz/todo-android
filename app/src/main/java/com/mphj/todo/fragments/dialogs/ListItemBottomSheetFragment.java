@@ -64,6 +64,8 @@ public class ListItemBottomSheetFragment extends BottomSheetDialogFragment {
     }
 
     void fillArgs() {
+        if (getArguments() == null)
+            return;
         id = getArguments().getInt("id", -1);
     }
 

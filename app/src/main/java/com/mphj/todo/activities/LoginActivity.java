@@ -17,11 +17,16 @@ import com.mphj.todo.repositories.rest.models.requests.SignupRequest;
 import com.mphj.todo.repositories.rest.models.responses.LoginResponse;
 import com.mphj.todo.repositories.rest.models.responses.SignupResponse;
 import com.mphj.todo.utils.Auth;
+import com.mphj.todo.utils.ConstraintsUtils;
 import com.mphj.todo.utils.DeviceUtils;
 import com.mphj.todo.utils.FontUtils;
+import com.mphj.todo.workers.DBSyncer;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.transition.TransitionManager;
+import androidx.work.ExistingWorkPolicy;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -130,6 +135,11 @@ public class LoginActivity extends BaseActivity {
                 LoginResponse loginResponse = response.body();
                 if (loginResponse.status == 200) {
                     Auth.login(loginRequest.email, loginResponse.token, getApplicationContext());
+                    WorkManager.getInstance().cancelUniqueWork(DBSyncer.NAME);
+                    OneTimeWorkRequest dbSync = new OneTimeWorkRequest.Builder(DBSyncer.class)
+                            .setConstraints(ConstraintsUtils.requireInternet())
+                            .build();
+                    WorkManager.getInstance().enqueueUniqueWork(DBSyncer.NAME, ExistingWorkPolicy.REPLACE.REPLACE, dbSync);
                     startActivity(new Intent(LoginActivity.this, MainActivity.class));
                 } else {
                     cleanPasswordFields();

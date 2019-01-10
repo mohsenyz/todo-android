@@ -14,6 +14,8 @@ import com.mphj.todo.BaseActivity;
 import com.mphj.todo.R;
 import com.mphj.todo.adapters.ListsAdapter;
 import com.mphj.todo.fragments.TodoListFragment;
+import com.mphj.todo.fragments.dialogs.ListItemBottomSheetFragment;
+import com.mphj.todo.repositories.Repository;
 
 import java.util.List;
 
@@ -43,6 +45,9 @@ public class TodoListActivity extends BaseActivity {
     RecyclerView lists;
 
     ListsAdapter listsAdapter;
+
+    @BindView(R.id.add_list)
+    TextView addList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,11 +79,18 @@ public class TodoListActivity extends BaseActivity {
         }
 
         LinearLayoutManager timeSuggestLayoutManager = new LinearLayoutManager(this);
-        listsAdapter = new ListsAdapter();
-        lists.setHasFixedSize(false);
-        lists.setAdapter(listsAdapter);
-        lists.setItemAnimator(new FadeInAnimator());
-        lists.setLayoutManager(timeSuggestLayoutManager);
+        Repository.db(this).userListDao().all().observe(this, (list) -> {
+            listsAdapter = new ListsAdapter(list);
+            lists.setHasFixedSize(false);
+            lists.setAdapter(listsAdapter);
+            lists.setItemAnimator(new FadeInAnimator());
+            lists.setLayoutManager(timeSuggestLayoutManager);
+        });
+
+        addList.setOnClickListener((view) -> {
+            ListItemBottomSheetFragment listItemBottomSheetFragment = new ListItemBottomSheetFragment();
+            listItemBottomSheetFragment.show(getSupportFragmentManager(), listItemBottomSheetFragment.getTag());
+        });
     }
 
     void resetTabs() {

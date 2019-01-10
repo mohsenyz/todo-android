@@ -27,4 +27,14 @@ public interface TodoDao {
     @Query("select * from todo")
     LiveData<List<Todo>> all();
 
+    @Query("select * from todo where updated_at > :updatedAt")
+    List<Todo> allSince(long updatedAt);
+
+
+    @Query("select id from todo where server_id = :serverId")
+    int byLocalId(int serverId);
+
+    @Query("update todo set server_id = :serverId where id = :localId")
+    void setServerId(int localId, int serverId);
+
 }

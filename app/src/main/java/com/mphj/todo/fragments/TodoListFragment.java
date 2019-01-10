@@ -20,15 +20,23 @@ import com.mphj.todo.repositories.Repository;
 import com.mphj.todo.repositories.db.entities.Flag;
 import com.mphj.todo.repositories.db.entities.Todo;
 import com.mphj.todo.utils.Animate;
+import com.mphj.todo.utils.ConstraintsUtils;
 import com.mphj.todo.view.RichEditText;
+import com.mphj.todo.workers.DBSyncer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.work.ExistingPeriodicWorkPolicy;
+import androidx.work.ExistingWorkPolicy;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -109,10 +117,6 @@ public class TodoListFragment extends Fragment implements BackHandler {
             timeSuggestLayoutManager.setReverseLayout(true);
             todoList.setLayoutManager(todoListLayoutManager);
         });
-
-
-        ListItemBottomSheetFragment listItemBottomSheetFragment = new ListItemBottomSheetFragment();
-        listItemBottomSheetFragment.show(getFragmentManager(), listItemBottomSheetFragment.getTag());
     }
 
     @OnClick(R.id.submit)
@@ -235,6 +239,10 @@ public class TodoListFragment extends Fragment implements BackHandler {
             flags.add(flag);
         }
         AsyncTask.execute(() -> Repository.db(getActivity()).flagDao().insert(flags));
+        OneTimeWorkRequest dbSync = new OneTimeWorkRequest.Builder(DBSyncer.class)
+                .setConstraints(ConstraintsUtils.requireInternet())
+                .build();
+        WorkManager.getInstance().enqueue(dbSync);
     }
 
     void hideTabLayout() {
