@@ -22,7 +22,7 @@ public interface TodoService {
     Call<SignupResponse> signUp(@Body SignupRequest signupRequest);
 
     @GET("/user/fcm/token")
-    Call<FcmUploadTokenResponse> renewFcmToken(@Query("token") String newToken);
+    Call<FcmUploadTokenResponse> renewFcmToken(@Query("fcmToken") String newToken, @Header("Token") String token);
 
     @POST("/user/todo")
     Call<PostTodoResponse> postTodo(@Body PostTodoRequest postTodoRequest, @Header("Token") String token);

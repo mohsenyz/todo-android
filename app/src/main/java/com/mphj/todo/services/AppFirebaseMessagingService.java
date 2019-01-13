@@ -1,32 +1,31 @@
 package com.mphj.todo.services;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
-import com.mphj.todo.utils.ConstraintsUtils;
+import com.google.firebase.messaging.RemoteMessage;
+import com.mphj.todo.utils.FcmUtils;
 import com.mphj.todo.utils.Prefs;
-import com.mphj.todo.workers.FcmTokenUploader;
+import com.mphj.todo.utils.RealTimeDatabase;
 
-import androidx.work.Data;
-import androidx.work.ExistingWorkPolicy;
-import androidx.work.OneTimeWorkRequest;
-import androidx.work.WorkManager;
+import java.util.Map;
 
 public class AppFirebaseMessagingService extends FirebaseMessagingService {
 
-    private static final String PREFS_KEY_FCM_TOKEN = "fcm_token";
+    public static final String PREFS_KEY_FCM_TOKEN = "fcm_token";
 
     @Override
     public void onNewToken(String token) {
+        Prefs.set("temp_key", token, getApplicationContext());
         Prefs.set(PREFS_KEY_FCM_TOKEN, token, getApplicationContext());
-        WorkManager.getInstance().cancelUniqueWork(FcmTokenUploader.NAME);
-        Data data = new Data.Builder()
-                .putString(FcmTokenUploader.ARG_TOKEN, token)
-                .build();
-        OneTimeWorkRequest fcmTokenUploader = new OneTimeWorkRequest.Builder(FcmTokenUploader.class)
-                .setConstraints(ConstraintsUtils.requireInternet())
-                .setInputData(data)
-                .build();
-        WorkManager.getInstance().enqueueUniqueWork(FcmTokenUploader.NAME, ExistingWorkPolicy.REPLACE, fcmTokenUploader);
+        FcmUtils.pushToken(getApplicationContext());
     }
 
 
+    @Override
+    public void onMessageReceived(RemoteMessage remoteMessage) {
+        //super.onMessageReceived(remoteMessage);
+        Map<String, String> data = remoteMessage.getData();
+        if (data.get("type").equals("update")) {
+            RealTimeDatabase.sync();
+        }
+    }
 }

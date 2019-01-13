@@ -16,6 +16,7 @@ import com.mphj.todo.R;
 import com.mphj.todo.repositories.Repository;
 import com.mphj.todo.repositories.db.entities.Todo;
 import com.mphj.todo.utils.DateUtils;
+import com.mphj.todo.utils.RealTimeDatabase;
 import com.mphj.todo.utils.spans.CustomBackgroundSpan;
 import com.mphj.todo.view.BorderedDrawable;
 
@@ -154,12 +155,17 @@ public class TodoListAdapter extends RecyclerView.Adapter<TodoListAdapter.ViewHo
                 todoViewHolder.text.setPaintFlags(todoViewHolder.text.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                 todoViewHolder.checkBox.setChecked(true, false);
                 todoViewHolder.text.setTextColor(Color.GRAY);
+            } else {
+                todoViewHolder.checkBox.setChecked(false, false);
+                todoViewHolder.text.setPaintFlags(0);
+                todoViewHolder.text.setTextColor(Color.BLACK);
             }
 
             todoViewHolder.checkBox.setOnCheckedChangeListener((v, c) -> {
                 todo.done = !todo.done;
                 todo.updatedAt = System.currentTimeMillis();
                 AsyncTask.execute(() -> Repository.db(null).todoDao().update(todo));
+                RealTimeDatabase.sync();
             });
         }
     }

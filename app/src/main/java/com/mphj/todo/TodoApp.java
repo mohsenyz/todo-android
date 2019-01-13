@@ -2,24 +2,12 @@ package com.mphj.todo;
 
 import android.app.Application;
 
-import com.mphj.todo.utils.ConstraintsUtils;
 import com.mphj.todo.utils.DimensionUtils;
 import com.mphj.todo.utils.FontUtils;
-import com.mphj.todo.utils.Prefs;
-import com.mphj.todo.workers.DBSyncer;
-import com.mphj.todo.workers.FcmTokenUploader;
+import com.mphj.todo.utils.RealTimeDatabase;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
-import java.time.Duration;
-import java.util.concurrent.TimeUnit;
-
-import androidx.work.Data;
-import androidx.work.ExistingPeriodicWorkPolicy;
-import androidx.work.ExistingWorkPolicy;
-import androidx.work.OneTimeWorkRequest;
-import androidx.work.PeriodicWorkRequest;
-import androidx.work.WorkManager;
 import es.dmoral.toasty.Toasty;
 import io.github.inflationx.calligraphy3.CalligraphyConfig;
 import io.github.inflationx.calligraphy3.CalligraphyInterceptor;
@@ -43,10 +31,6 @@ public class TodoApp extends Application {
                 .apply();
         JodaTimeAndroid.init(this);
 
-        WorkManager.getInstance().cancelUniqueWork(DBSyncer.NAME);
-        PeriodicWorkRequest dbSync = new PeriodicWorkRequest.Builder(DBSyncer.class, 15, TimeUnit.SECONDS)
-                .setConstraints(ConstraintsUtils.requireInternet())
-                .build();
-        WorkManager.getInstance().enqueueUniquePeriodicWork(DBSyncer.NAME, ExistingPeriodicWorkPolicy.REPLACE, dbSync);
+        RealTimeDatabase.initSync();
     }
 }
